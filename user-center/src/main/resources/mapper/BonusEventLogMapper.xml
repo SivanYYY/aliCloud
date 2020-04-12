@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ym.usercenter.dao.user.IBonusEventLogDao" >
+	<resultMap id="bonusEventLogResultMap" type="com.ym.usercenter.domain.user.dto.BonusEventLogDTO">
+		<result column="ID" property="id" /> 
+		<result column="USER_ID" property="userId" /> 
+		<result column="VALUE" property="value" /> 
+		<result column="EVENT" property="event" /> 
+		<result column="CREATE_TIME" property="createTime" /> 
+		<result column="DESCRIPTION" property="description" /> 
+	</resultMap>
+	<sql id="baseSql">
+		<![CDATA[
+			SELECT ID,USER_ID,VALUE,EVENT,CREATE_TIME,DESCRIPTION FROM bonus_event_log
+		]]>
+	</sql>
+	
+	<select id="selectTList" parameterType="com.ym.usercenter.commons.page.Pager" resultMap="bonusEventLogResultMap">
+		<include refid="baseSql"/>	
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.userId != null and params.userId != ''" >
+				and USER_ID = #{params.userId}
+			</if>
+			<if test="params != null and params.value != null and params.value != ''" >
+				and VALUE = #{params.value}
+			</if>
+			<if test="params != null and params.event != null and params.event != ''" >
+				and EVENT = #{params.event}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.description != null and params.description != ''" >
+				and DESCRIPTION = #{params.description}
+			</if>
+		</trim>
+			<if test="orderField != null and orderField != ''" >
+		      order by ${orderField}
+		    </if>
+		    <if test="orderField == null or orderField == ''" >
+		      order by id
+		    </if>
+			<if test="orderDirection != null and orderDirection != ''" >
+		      ${orderDirection}
+		    </if>
+			<if test="orderDirection == null or orderDirection == ''" >
+		      desc
+		    </if>
+		    <if test="limitStart >= 0" >
+		      limit #{limitStart} , #{pageSize}
+		    </if>
+	</select>
+	<select id="selectTListCount" parameterType="com.ym.usercenter.commons.page.Pager" resultType="java.lang.Integer">
+		select count(1) from bonus_event_log 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.userId != null and params.userId != ''" >
+				and USER_ID = #{params.userId}
+			</if>
+			<if test="params != null and params.value != null and params.value != ''" >
+				and VALUE = #{params.value}
+			</if>
+			<if test="params != null and params.event != null and params.event != ''" >
+				and EVENT = #{params.event}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.description != null and params.description != ''" >
+				and DESCRIPTION = #{params.description}
+			</if>
+		</trim>
+	</select>
+	<select id="selectAll" resultMap="bonusEventLogResultMap">
+		<include refid="baseSql"/>
+	</select>	
+	<select id="selectById" parameterType="java.lang.Integer" resultMap="bonusEventLogResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE ID=#{id}]]>
+	</select>
+	<select id="selectByUUID" parameterType="java.lang.String" resultMap="bonusEventLogResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE UUID=#{uuid}]]>
+	</select>
+	
+	<insert id="insert" parameterType="com.ym.usercenter.domain.user.BonusEventLog" useGeneratedKeys="true" keyProperty="id">
+		insert into bonus_event_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null" >
+				USER_ID,
+			</if>
+			<if test="value != null" >
+				VALUE,
+			</if>
+			<if test="event != null" >
+				EVENT,
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME,
+			</if>
+			<if test="description != null" >
+				DESCRIPTION,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null" >
+				#{userId},
+			</if>
+			<if test="value != null" >
+				#{value},
+			</if>
+			<if test="event != null" >
+				#{event},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="description != null" >
+				#{description},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateObj" parameterType="com.ym.usercenter.domain.user.BonusEventLog">
+		update bonus_event_log
+		<set>
+			<if test="userId != null" >
+				USER_ID = #{userId},
+			</if>
+			<if test="value != null" >
+				VALUE = #{value},
+			</if>
+			<if test="event != null" >
+				EVENT = #{event},
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME = #{createTime},
+			</if>
+			<if test="description != null" >
+				DESCRIPTION = #{description},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>	
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM bonus_event_log
+			WHERE ID=#{id}
+		]]>
+	</delete>	
+	
+	<!-- ex block-->
+	<!-- -->
+</mapper>

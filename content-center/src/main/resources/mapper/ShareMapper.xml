@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ym.content.dao.IShareDao" >
+	<resultMap id="shareResultMap" type="com.ym.content.domain.dto.ShareDTO">
+		<result column="ID" property="id" /> 
+		<result column="USER_ID" property="userId" /> 
+		<result column="TITLE" property="title" /> 
+		<result column="CREATE_TIME" property="createTime" /> 
+		<result column="UPDATE_TIME" property="updateTime" /> 
+		<result column="IS_ORIGINAL" property="isOriginal" /> 
+		<result column="AUTHOR" property="author" /> 
+		<result column="COVER" property="cover" /> 
+		<result column="SUMMARY" property="summary" /> 
+		<result column="PRICE" property="price" /> 
+		<result column="DOWNLOAD_URL" property="downloadUrl" /> 
+		<result column="BUY_COUNT" property="buyCount" /> 
+		<result column="SHOW_FLAG" property="showFlag" /> 
+		<result column="AUDIT_STATUS" property="auditStatus" /> 
+		<result column="REASON" property="reason" /> 
+	</resultMap>
+	<sql id="baseSql">
+		<![CDATA[
+			SELECT ID,USER_ID,TITLE,CREATE_TIME,UPDATE_TIME,IS_ORIGINAL,AUTHOR,COVER,SUMMARY,PRICE,DOWNLOAD_URL,BUY_COUNT,SHOW_FLAG,AUDIT_STATUS,REASON FROM share
+		]]>
+	</sql>
+	
+	<select id="selectTList" parameterType="com.ym.content.commons.page.Pager" resultMap="shareResultMap">
+		<include refid="baseSql"/>	
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.userId != null and params.userId != ''" >
+				and USER_ID = #{params.userId}
+			</if>
+			<if test="params != null and params.title != null and params.title != ''" >
+				and TITLE = #{params.title}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.updateTime != null" >
+				and UPDATE_TIME = #{params.updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.isOriginal != null and params.isOriginal != ''" >
+				and IS_ORIGINAL = #{params.isOriginal}
+			</if>
+			<if test="params != null and params.author != null and params.author != ''" >
+				and AUTHOR = #{params.author}
+			</if>
+			<if test="params != null and params.cover != null and params.cover != ''" >
+				and COVER = #{params.cover}
+			</if>
+			<if test="params != null and params.summary != null and params.summary != ''" >
+				and SUMMARY = #{params.summary}
+			</if>
+			<if test="params != null and params.price != null and params.price != ''" >
+				and PRICE = #{params.price}
+			</if>
+			<if test="params != null and params.downloadUrl != null and params.downloadUrl != ''" >
+				and DOWNLOAD_URL = #{params.downloadUrl}
+			</if>
+			<if test="params != null and params.buyCount != null and params.buyCount != ''" >
+				and BUY_COUNT = #{params.buyCount}
+			</if>
+			<if test="params != null and params.showFlag != null and params.showFlag != ''" >
+				and SHOW_FLAG = #{params.showFlag}
+			</if>
+			<if test="params != null and params.auditStatus != null and params.auditStatus != ''" >
+				and AUDIT_STATUS = #{params.auditStatus}
+			</if>
+			<if test="params != null and params.reason != null and params.reason != ''" >
+				and REASON = #{params.reason}
+			</if>
+		</trim>
+			<if test="orderField != null and orderField != ''" >
+		      order by ${orderField}
+		    </if>
+		    <if test="orderField == null or orderField == ''" >
+		      order by id
+		    </if>
+			<if test="orderDirection != null and orderDirection != ''" >
+		      ${orderDirection}
+		    </if>
+			<if test="orderDirection == null or orderDirection == ''" >
+		      desc
+		    </if>
+		    <if test="limitStart >= 0" >
+		      limit #{limitStart} , #{pageSize}
+		    </if>
+	</select>
+	<select id="selectTListCount" parameterType="com.ym.content.commons.page.Pager" resultType="java.lang.Integer">
+		select count(1) from share 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.userId != null and params.userId != ''" >
+				and USER_ID = #{params.userId}
+			</if>
+			<if test="params != null and params.title != null and params.title != ''" >
+				and TITLE = #{params.title}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.updateTime != null" >
+				and UPDATE_TIME = #{params.updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.isOriginal != null and params.isOriginal != ''" >
+				and IS_ORIGINAL = #{params.isOriginal}
+			</if>
+			<if test="params != null and params.author != null and params.author != ''" >
+				and AUTHOR = #{params.author}
+			</if>
+			<if test="params != null and params.cover != null and params.cover != ''" >
+				and COVER = #{params.cover}
+			</if>
+			<if test="params != null and params.summary != null and params.summary != ''" >
+				and SUMMARY = #{params.summary}
+			</if>
+			<if test="params != null and params.price != null and params.price != ''" >
+				and PRICE = #{params.price}
+			</if>
+			<if test="params != null and params.downloadUrl != null and params.downloadUrl != ''" >
+				and DOWNLOAD_URL = #{params.downloadUrl}
+			</if>
+			<if test="params != null and params.buyCount != null and params.buyCount != ''" >
+				and BUY_COUNT = #{params.buyCount}
+			</if>
+			<if test="params != null and params.showFlag != null and params.showFlag != ''" >
+				and SHOW_FLAG = #{params.showFlag}
+			</if>
+			<if test="params != null and params.auditStatus != null and params.auditStatus != ''" >
+				and AUDIT_STATUS = #{params.auditStatus}
+			</if>
+			<if test="params != null and params.reason != null and params.reason != ''" >
+				and REASON = #{params.reason}
+			</if>
+		</trim>
+	</select>
+	<select id="selectAll" resultMap="shareResultMap">
+		<include refid="baseSql"/>
+	</select>	
+	<select id="selectById" parameterType="java.lang.Integer" resultMap="shareResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE ID=#{id}]]>
+	</select>
+	<select id="selectByUUID" parameterType="java.lang.String" resultMap="shareResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE UUID=#{uuid}]]>
+	</select>
+	
+	<insert id="insert" parameterType="com.ym.content.domain.Share" useGeneratedKeys="true" keyProperty="id">
+		insert into share
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="userId != null" >
+				USER_ID,
+			</if>
+			<if test="title != null" >
+				TITLE,
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME,
+			</if>
+			<if test="updateTime != null" >
+				UPDATE_TIME,
+			</if>
+			<if test="isOriginal != null" >
+				IS_ORIGINAL,
+			</if>
+			<if test="author != null" >
+				AUTHOR,
+			</if>
+			<if test="cover != null" >
+				COVER,
+			</if>
+			<if test="summary != null" >
+				SUMMARY,
+			</if>
+			<if test="price != null" >
+				PRICE,
+			</if>
+			<if test="downloadUrl != null" >
+				DOWNLOAD_URL,
+			</if>
+			<if test="buyCount != null" >
+				BUY_COUNT,
+			</if>
+			<if test="showFlag != null" >
+				SHOW_FLAG,
+			</if>
+			<if test="auditStatus != null" >
+				AUDIT_STATUS,
+			</if>
+			<if test="reason != null" >
+				REASON,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="userId != null" >
+				#{userId},
+			</if>
+			<if test="title != null" >
+				#{title},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+			<if test="isOriginal != null" >
+				#{isOriginal},
+			</if>
+			<if test="author != null" >
+				#{author},
+			</if>
+			<if test="cover != null" >
+				#{cover},
+			</if>
+			<if test="summary != null" >
+				#{summary},
+			</if>
+			<if test="price != null" >
+				#{price},
+			</if>
+			<if test="downloadUrl != null" >
+				#{downloadUrl},
+			</if>
+			<if test="buyCount != null" >
+				#{buyCount},
+			</if>
+			<if test="showFlag != null" >
+				#{showFlag},
+			</if>
+			<if test="auditStatus != null" >
+				#{auditStatus},
+			</if>
+			<if test="reason != null" >
+				#{reason},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateObj" parameterType="com.ym.content.domain.Share">
+		update share
+		<set>
+			<if test="userId != null" >
+				USER_ID = #{userId},
+			</if>
+			<if test="title != null" >
+				TITLE = #{title},
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME = #{createTime},
+			</if>
+			<if test="updateTime != null" >
+				UPDATE_TIME = #{updateTime},
+			</if>
+			<if test="isOriginal != null" >
+				IS_ORIGINAL = #{isOriginal},
+			</if>
+			<if test="author != null" >
+				AUTHOR = #{author},
+			</if>
+			<if test="cover != null" >
+				COVER = #{cover},
+			</if>
+			<if test="summary != null" >
+				SUMMARY = #{summary},
+			</if>
+			<if test="price != null" >
+				PRICE = #{price},
+			</if>
+			<if test="downloadUrl != null" >
+				DOWNLOAD_URL = #{downloadUrl},
+			</if>
+			<if test="buyCount != null" >
+				BUY_COUNT = #{buyCount},
+			</if>
+			<if test="showFlag != null" >
+				SHOW_FLAG = #{showFlag},
+			</if>
+			<if test="auditStatus != null" >
+				AUDIT_STATUS = #{auditStatus},
+			</if>
+			<if test="reason != null" >
+				REASON = #{reason},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>	
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM share
+			WHERE ID=#{id}
+		]]>
+	</delete>	
+	
+	<!-- ex block-->
+	<!-- -->
+</mapper>

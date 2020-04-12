@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ym.usercenter.dao.user.IUserDao" >
+	<resultMap id="userResultMap" type="com.ym.usercenter.domain.user.dto.UserDTO">
+		<result column="ID" property="id" /> 
+		<result column="WX_ID" property="wxId" /> 
+		<result column="WX_NICKNAME" property="wxNickname" /> 
+		<result column="ROLES" property="roles" /> 
+		<result column="AVATAR_URL" property="avatarUrl" /> 
+		<result column="CREATE_TIME" property="createTime" /> 
+		<result column="UPDATE_TIME" property="updateTime" /> 
+		<result column="BONUS" property="bonus" /> 
+	</resultMap>
+	<sql id="baseSql">
+		<![CDATA[
+			SELECT ID,WX_ID,WX_NICKNAME,ROLES,AVATAR_URL,CREATE_TIME,UPDATE_TIME,BONUS FROM user
+		]]>
+	</sql>
+	
+	<select id="selectTList" parameterType="com.ym.usercenter.commons.page.Pager" resultMap="userResultMap">
+		<include refid="baseSql"/>	
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.wxId != null and params.wxId != ''" >
+				and WX_ID = #{params.wxId}
+			</if>
+			<if test="params != null and params.wxNickname != null and params.wxNickname != ''" >
+				and WX_NICKNAME = #{params.wxNickname}
+			</if>
+			<if test="params != null and params.roles != null and params.roles != ''" >
+				and ROLES = #{params.roles}
+			</if>
+			<if test="params != null and params.avatarUrl != null and params.avatarUrl != ''" >
+				and AVATAR_URL = #{params.avatarUrl}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.updateTime != null" >
+				and UPDATE_TIME = #{params.updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.bonus != null and params.bonus != ''" >
+				and BONUS = #{params.bonus}
+			</if>
+		</trim>
+			<if test="orderField != null and orderField != ''" >
+		      order by ${orderField}
+		    </if>
+		    <if test="orderField == null or orderField == ''" >
+		      order by id
+		    </if>
+			<if test="orderDirection != null and orderDirection != ''" >
+		      ${orderDirection}
+		    </if>
+			<if test="orderDirection == null or orderDirection == ''" >
+		      desc
+		    </if>
+		    <if test="limitStart >= 0" >
+		      limit #{limitStart} , #{pageSize}
+		    </if>
+	</select>
+	<select id="selectTListCount" parameterType="com.ym.usercenter.commons.page.Pager" resultType="java.lang.Integer">
+		select count(1) from user 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.wxId != null and params.wxId != ''" >
+				and WX_ID = #{params.wxId}
+			</if>
+			<if test="params != null and params.wxNickname != null and params.wxNickname != ''" >
+				and WX_NICKNAME = #{params.wxNickname}
+			</if>
+			<if test="params != null and params.roles != null and params.roles != ''" >
+				and ROLES = #{params.roles}
+			</if>
+			<if test="params != null and params.avatarUrl != null and params.avatarUrl != ''" >
+				and AVATAR_URL = #{params.avatarUrl}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.updateTime != null" >
+				and UPDATE_TIME = #{params.updateTime,jdbcType=TIMESTAMP}
+			</if>
+			<if test="params != null and params.bonus != null and params.bonus != ''" >
+				and BONUS = #{params.bonus}
+			</if>
+		</trim>
+	</select>
+	<select id="selectAll" resultMap="userResultMap">
+		<include refid="baseSql"/>
+	</select>	
+	<select id="selectById" parameterType="java.lang.Integer" resultMap="userResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE ID=#{id}]]>
+	</select>
+	<select id="selectByUUID" parameterType="java.lang.String" resultMap="userResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE UUID=#{uuid}]]>
+	</select>
+	
+	<insert id="insert" parameterType="com.ym.usercenter.domain.user.User" useGeneratedKeys="true" keyProperty="id">
+		insert into user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="wxId != null" >
+				WX_ID,
+			</if>
+			<if test="wxNickname != null" >
+				WX_NICKNAME,
+			</if>
+			<if test="roles != null" >
+				ROLES,
+			</if>
+			<if test="avatarUrl != null" >
+				AVATAR_URL,
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME,
+			</if>
+			<if test="updateTime != null" >
+				UPDATE_TIME,
+			</if>
+			<if test="bonus != null" >
+				BONUS,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="wxId != null" >
+				#{wxId},
+			</if>
+			<if test="wxNickname != null" >
+				#{wxNickname},
+			</if>
+			<if test="roles != null" >
+				#{roles},
+			</if>
+			<if test="avatarUrl != null" >
+				#{avatarUrl},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+			<if test="updateTime != null" >
+				#{updateTime},
+			</if>
+			<if test="bonus != null" >
+				#{bonus},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateObj" parameterType="com.ym.usercenter.domain.user.User">
+		update user
+		<set>
+			<if test="wxId != null" >
+				WX_ID = #{wxId},
+			</if>
+			<if test="wxNickname != null" >
+				WX_NICKNAME = #{wxNickname},
+			</if>
+			<if test="roles != null" >
+				ROLES = #{roles},
+			</if>
+			<if test="avatarUrl != null" >
+				AVATAR_URL = #{avatarUrl},
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME = #{createTime},
+			</if>
+			<if test="updateTime != null" >
+				UPDATE_TIME = #{updateTime},
+			</if>
+			<if test="bonus != null" >
+				BONUS = #{bonus},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>	
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM user
+			WHERE ID=#{id}
+		]]>
+	</delete>	
+	
+	<!-- ex block-->
+	<select id="dd">
+		<include refid="baseSql"/>
+	</select>
+	<!-- -->
+</mapper>

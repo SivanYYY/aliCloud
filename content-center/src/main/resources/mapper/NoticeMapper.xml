@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ym.content.dao.INoticeDao" >
+	<resultMap id="noticeResultMap" type="com.ym.content.domain.dto.NoticeDTO">
+		<result column="ID" property="id" /> 
+		<result column="CONTENT" property="content" /> 
+		<result column="SHOW_FLAG" property="showFlag" /> 
+		<result column="CREATE_TIME" property="createTime" /> 
+	</resultMap>
+	<sql id="baseSql">
+		<![CDATA[
+			SELECT ID,CONTENT,SHOW_FLAG,CREATE_TIME FROM notice
+		]]>
+	</sql>
+	
+	<select id="selectTList" parameterType="com.ym.content.commons.page.Pager" resultMap="noticeResultMap">
+		<include refid="baseSql"/>	
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.content != null and params.content != ''" >
+				and CONTENT = #{params.content}
+			</if>
+			<if test="params != null and params.showFlag != null and params.showFlag != ''" >
+				and SHOW_FLAG = #{params.showFlag}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+			<if test="orderField != null and orderField != ''" >
+		      order by ${orderField}
+		    </if>
+		    <if test="orderField == null or orderField == ''" >
+		      order by id
+		    </if>
+			<if test="orderDirection != null and orderDirection != ''" >
+		      ${orderDirection}
+		    </if>
+			<if test="orderDirection == null or orderDirection == ''" >
+		      desc
+		    </if>
+		    <if test="limitStart >= 0" >
+		      limit #{limitStart} , #{pageSize}
+		    </if>
+	</select>
+	<select id="selectTListCount" parameterType="com.ym.content.commons.page.Pager" resultType="java.lang.Integer">
+		select count(1) from notice 
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="params != null and params.content != null and params.content != ''" >
+				and CONTENT = #{params.content}
+			</if>
+			<if test="params != null and params.showFlag != null and params.showFlag != ''" >
+				and SHOW_FLAG = #{params.showFlag}
+			</if>
+			<if test="params != null and params.createTime != null" >
+				and CREATE_TIME = #{params.createTime,jdbcType=TIMESTAMP}
+			</if>
+		</trim>
+	</select>
+	<select id="selectAll" resultMap="noticeResultMap">
+		<include refid="baseSql"/>
+	</select>	
+	<select id="selectById" parameterType="java.lang.Integer" resultMap="noticeResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE ID=#{id}]]>
+	</select>
+	<select id="selectByUUID" parameterType="java.lang.String" resultMap="noticeResultMap">
+		<include refid="baseSql"/>	
+		<![CDATA[ WHERE UUID=#{uuid}]]>
+	</select>
+	
+	<insert id="insert" parameterType="com.ym.content.domain.Notice" useGeneratedKeys="true" keyProperty="id">
+		insert into notice
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="content != null" >
+				CONTENT,
+			</if>
+			<if test="showFlag != null" >
+				SHOW_FLAG,
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="content != null" >
+				#{content},
+			</if>
+			<if test="showFlag != null" >
+				#{showFlag},
+			</if>
+			<if test="createTime != null" >
+				#{createTime},
+			</if>
+		</trim>
+	</insert>
+	
+	<update id="updateObj" parameterType="com.ym.content.domain.Notice">
+		update notice
+		<set>
+			<if test="content != null" >
+				CONTENT = #{content},
+			</if>
+			<if test="showFlag != null" >
+				SHOW_FLAG = #{showFlag},
+			</if>
+			<if test="createTime != null" >
+				CREATE_TIME = #{createTime},
+			</if>
+		</set>
+		where ID = #{id}
+	</update>	
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		<![CDATA[
+			DELETE FROM notice
+			WHERE ID=#{id}
+		]]>
+	</delete>	
+	
+	<!-- ex block-->
+	<!-- -->
+</mapper>
